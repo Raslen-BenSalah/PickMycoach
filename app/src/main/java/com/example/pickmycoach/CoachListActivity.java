@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,10 +41,18 @@ public class CoachListActivity extends AppCompatActivity implements CoachAdapter
         mAuth = FirebaseAuth.getInstance();
 
         // Set up action bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Available Coaches");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false); // No back button needed here
-        }
+        ImageButton menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(this, v);
+            popup.getMenuInflater().inflate(R.menu.main_menu, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(item -> {
+                // Handle menu item clicks
+                return onOptionsItemSelected(item);
+            });
+
+            popup.show();
+        });
 
         initViews();
         loadCoaches();
@@ -140,7 +150,7 @@ public class CoachListActivity extends AppCompatActivity implements CoachAdapter
 
     private void showProfile() {
         // Replace with actual implementation when ready
-        Toast.makeText(this, "Profile feature coming soon", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, ProfileActivity.class));
 
         // For future implementation:
         // startActivity(new Intent(this, ProfileActivity.class));
