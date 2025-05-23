@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fitness Coach App</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Full Name</string>
+    <string name="coaches">Available Coaches</string>
+    <string name="book_appointment">Book Appointment</string>
+    <string name="profile">Profile</string>
+    <string name="my_appointments">My Appointments</string>
+    <string name="logout">Logout</string>
+    <string name="share">Share</string>
+    <string name="back">Back</string>
+</resources>

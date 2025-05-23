@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "592270069544",
+    "project_id": "pickmycoach-bc1c2",
+    "storage_bucket": "pickmycoach-bc1c2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592270069544:android:48418cab87abb84b2c0a1d",
+        "android_client_info": {
+          "package_name": "com.example.pickmycoach"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDulTb8X2OBi60U-iki91TG2dlaqcq5e_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
