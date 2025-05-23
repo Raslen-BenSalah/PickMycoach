@@ -34,8 +34,15 @@ public class CoachListActivity extends AppCompatActivity implements CoachAdapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coach_list);
 
+        // Initialize Firebase instances
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
+        // Set up action bar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Available Coaches");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false); // No back button needed here
+        }
 
         initViews();
         loadCoaches();
@@ -52,8 +59,8 @@ public class CoachListActivity extends AppCompatActivity implements CoachAdapter
 
     @SuppressLint("NotifyDataSetChanged")
     private void loadCoaches() {
-        // Add sample coaches to Firestore if they don't exist
-        addSampleCoaches();
+        // Show loading indicator
+        Toast.makeText(this, "Loading coaches...", Toast.LENGTH_SHORT).show();
 
         db.collection("coaches")
                 .get()
@@ -66,29 +73,15 @@ public class CoachListActivity extends AppCompatActivity implements CoachAdapter
                             coachList.add(coach);
                         }
                         adapter.notifyDataSetChanged();
+
+                        if (coachList.isEmpty()) {
+                            Toast.makeText(this, "No coaches available", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(this, "Failed to load coaches", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Failed to load coaches: " +
+                                task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    private void addSampleCoaches() {
-        // Sample coaches data
-        Coach[] sampleCoaches = {
-                new Coach("1", "John Smith", "Weight Training", "5 years", "4.8", "$50/hour",
-                        "", "Experienced weight training coach specializing in strength building and muscle gain.",
-                        "Mon-Fri: 9AM-6PM"),
-                new Coach("2", "Sarah Johnson", "Cardio & HIIT", "3 years", "4.9", "$45/hour",
-                        "", "High-energy cardio specialist focusing on HIIT workouts and endurance training.",
-                        "Tue-Sat: 7AM-5PM"),
-                new Coach("3", "Mike Wilson", "Yoga & Flexibility", "7 years", "4.7", "$40/hour",
-                        "", "Certified yoga instructor with expertise in flexibility and mindfulness training.",
-                        "Mon-Sun: 6AM-8PM")
-        };
-
-        for (Coach coach : sampleCoaches) {
-            db.collection("coaches").document(coach.getId()).set(coach);
-        }
     }
 
     @Override
@@ -105,6 +98,7 @@ public class CoachListActivity extends AppCompatActivity implements CoachAdapter
         startActivity(intent);
     }
 
+    // Menu implementation
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -116,19 +110,39 @@ public class CoachListActivity extends AppCompatActivity implements CoachAdapter
         int id = item.getItemId();
 
         if (id == R.id.menu_logout) {
-            mAuth.signOut();
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+            handleLogout();
             return true;
         } else if (id == R.id.menu_my_appointments) {
-            Toast.makeText(this, "My Appointments feature coming soon", Toast.LENGTH_SHORT).show();
+            showAppointments();
             return true;
         } else if (id == R.id.menu_profile) {
-            Toast.makeText(this, "Profile feature coming soon", Toast.LENGTH_SHORT).show();
+            showProfile();
             return true;
-        } else {
-            return super.onOptionsItemSelected(item);
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
+    private void handleLogout() {
+        mAuth.signOut();
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showAppointments() {
+        // Replace with actual implementation when ready
+        Toast.makeText(this, "My Appointments feature coming soon", Toast.LENGTH_SHORT).show();
+
+        // For future implementation:
+        // startActivity(new Intent(this, AppointmentsActivity.class));
+    }
+
+    private void showProfile() {
+        // Replace with actual implementation when ready
+        Toast.makeText(this, "Profile feature coming soon", Toast.LENGTH_SHORT).show();
+
+        // For future implementation:
+        // startActivity(new Intent(this, ProfileActivity.class));
+    }
 }

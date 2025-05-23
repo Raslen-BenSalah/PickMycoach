@@ -113,27 +113,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-        String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
-        String name = etName.getText().toString().trim();
+        try {
+            String email = etEmail.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            String name = etName.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name)) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-            return;
+            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name)) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Basic email validation
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Password strength check (optional)
+            if (password.length() < 6) {
+                Toast.makeText(this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                saveUserToFirestore(user.getUid(), name, email);
+                            }
+                        } else {
+                            String errorMessage = "Registration failed";
+                            if (task.getException() != null) {
+                                errorMessage += ": " + task.getException().getMessage();
+                                Log.e("MainActivity", "Registration error", task.getException());
+                            }
+                            Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } catch (Exception ex) {
+            Log.e("MainActivity", "registerUser error: " + ex.getMessage(), ex);
+            Toast.makeText(this, "An unexpected error occurred", Toast.LENGTH_SHORT).show();
         }
-
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        saveUserToFirestore(user.getUid(), name, email);
-                    } else {
-                        Log.i("Main activity", "registerUser: "+task.getException());
-                        Log.i("Main activity", "registerUser: "+task.getException().getMessage());
-                        Toast.makeText(MainActivity.this, "Registration failed: " + task.getException().getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     private void saveUserToFirestore(String userId, String name, String email) {
